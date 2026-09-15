@@ -110,20 +110,46 @@ async function loadLocations(AdvancedMarkerElement) {
 
 async function addLocationMarker(location, AdvancedMarkerElement) {
 
+    // Create custom marker image
+    const markerImage = document.createElement("img");
+
+    markerImage.src = "./e2e_google_maps_marker_64x64.png";
+    markerImage.alt = location.name;
+
+    // Marker size on the map
+    markerImage.style.width = "48px";
+    markerImage.style.height = "48px";
+
+    // Position the bottom tip of the marker exactly
+    // on the latitude/longitude location
+    //markerImage.style.transform = "translate(-50%, -100%)";
+
+    // Create the Google Maps Advanced Marker
     const marker = new AdvancedMarkerElement({
         map: map,
+
         position: {
             lat: location.latitude,
             lng: location.longitude
         },
-        title: location.name
+
+        title: location.name,
+
+        // Use our custom image instead of Google's default marker
+        content: markerImage
     });
 
+    // Click handler
     marker.addListener("click", () => {
 
         infoWindow.setContent(`
             <div style="min-width:200px;padding:4px">
-                <div style="font-size:16px;font-weight:bold;margin-bottom:8px">
+
+                <div style="
+                    font-size:16px;
+                    font-weight:bold;
+                    margin-bottom:8px;
+                ">
                     ${escapeHtml(location.name)}
                 </div>
 
@@ -136,6 +162,7 @@ async function addLocationMarker(location, AdvancedMarkerElement) {
                     <strong>Category:</strong>
                     ${escapeHtml(location.category)}
                 </div>
+
             </div>
         `);
 
@@ -144,6 +171,8 @@ async function addLocationMarker(location, AdvancedMarkerElement) {
             anchor: marker
         });
     });
+
+    return marker;
 }
 
     function parseCSV(csv) {
